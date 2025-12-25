@@ -24,9 +24,10 @@ jobs:
         run: |
           echo "RAILWAY_TOKEN is set: ${RAILWAY_TOKEN:+yes}"
           echo "RAILWAY_PROJECT_ID is set: ${RAILWAY_PROJECT_ID:+yes}"
+          echo "Project ID value: '$RAILWAY_PROJECT_ID'"
 
       # 3️⃣ Deploy to Railway
       - name: Deploy to Railway
         run: |
-          railway link $RAILWAY_PROJECT_ID
+          railway link "$RAILWAY_PROJECT_ID"
           railway up --detach --service web
