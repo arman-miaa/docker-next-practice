@@ -8,26 +8,18 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Using the official Railway CLI container
     container: ghcr.io/railwayapp/cli:latest
-
-    env:
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
 
     steps:
       # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Optional: Debug secrets
-      - name: Check secrets
-        run: |
-          echo "RAILWAY_TOKEN is set: ${RAILWAY_TOKEN:+yes}"
-          echo "RAILWAY_PROJECT_ID is set: ${RAILWAY_PROJECT_ID:+yes}"
-          echo "Project ID value: '$RAILWAY_PROJECT_ID'"
-
-      # 3️⃣ Deploy to Railway
+      # 2️⃣ Deploy to Railway
+      # We use the --project flag instead of 'railway link' to avoid the "unexpected argument" error.
       - name: Deploy to Railway
-        run: |
-          railway link "$RAILWAY_PROJECT_ID"
-          railway up --detach --service web
+        run: railway up --detach --service web --project $RAILWAY_PROJECT_ID
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
