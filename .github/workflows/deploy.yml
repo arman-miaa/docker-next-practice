@@ -8,18 +8,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Using the official Railway CLI container
     container: ghcr.io/railwayapp/cli:latest
 
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Deploy to Railway
-      # Note: We do NOT use 'railway link' or '--project' because 
-      # the RAILWAY_TOKEN already contains the project context.
       - name: Deploy to Railway
-        run: railway up --detach
+        # Specify the service name explicitly
+        run: railway up --detach --service docker-next-practice
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
