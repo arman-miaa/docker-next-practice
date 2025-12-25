@@ -12,16 +12,21 @@ jobs:
 
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
 
     steps:
       # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Link to Railway Project
-      - name: Link Railway Project
-        run: railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
+      # 2️⃣ Optional: Debug secrets
+      - name: Check secrets
+        run: |
+          echo "RAILWAY_TOKEN is set: ${RAILWAY_TOKEN:+yes}"
+          echo "RAILWAY_PROJECT_ID is set: ${RAILWAY_PROJECT_ID:+yes}"
 
       # 3️⃣ Deploy to Railway
       - name: Deploy to Railway
-        run: railway up --detach
+        run: |
+          railway link $RAILWAY_PROJECT_ID
+          railway up --detach --service web
