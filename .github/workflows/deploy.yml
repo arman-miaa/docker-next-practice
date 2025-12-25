@@ -20,23 +20,9 @@ jobs:
         with:
           node-version: 20
 
-      # 3️⃣ Install Railway CLI
-      - name: Install Railway CLI
-        run: |
-          curl -fsSL https://railway.app/install.sh | sh
-          echo "$HOME/.railway/bin" >> $GITHUB_PATH
-
-      # 4️⃣ Verify Railway CLI Installation
-      - name: Verify Railway CLI
-        run: |
-          export PATH="$HOME/.railway/bin:$PATH"
-          railway --version
-
-      # 5️⃣ Deploy to Railway
+      # 3️⃣ Deploy to Railway using Official Action
       - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          export PATH="$HOME/.railway/bin:$PATH"
-          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
-          railway up --detach
+        uses: bervProject/railway-deploy@main
+        with:
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
+          service: ${{ secrets.RAILWAY_SERVICE_NAME }}
