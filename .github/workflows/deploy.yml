@@ -8,39 +8,26 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
 
     steps:
-      # 1️⃣ Checkout code
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      # 3️⃣ Install Railway CLI
-      - name: Install Railway CLI
-        run: curl -sSL https://railway.app/install.sh | sh
-
-      # 4️⃣ Debug secrets (optional, safe)
+      # 2️⃣ Optional: Debug secrets
       - name: Check secrets
         run: |
-          if [ -z "${{ secrets.RAILWAY_TOKEN }}" ]; then
-            echo "RAILWAY_TOKEN is missing!"
-            exit 1
-          fi
-          if [ -z "${{ secrets.RAILWAY_PROJECT_ID }}" ]; then
-            echo "RAILWAY_PROJECT_ID is missing!"
-            exit 1
-          fi
-          echo "✅ Secrets are set"
+          echo "RAILWAY_TOKEN is set: ${RAILWAY_TOKEN:+yes}"
+          echo "RAILWAY_PROJECT_ID is set: ${RAILWAY_PROJECT_ID:+yes}"
 
-      # 5️⃣ Deploy to Railway
+      # 3️⃣ Deploy to Railway
       - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
         run: |
-          railway up --detach
+          railway login --apiKey $RAILWAY_TOKEN
+          railway link $RAILWAY_PROJECT_ID
+          railway up --detach --service web
