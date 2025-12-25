@@ -24,9 +24,23 @@ jobs:
       - name: Install Railway CLI
         run: curl -sSL https://railway.app/install.sh | sh
 
-      # 4️⃣ Deploy to Railway (explicit export of secrets)
-      - name: Deploy to Railway
+      # 4️⃣ Debug secrets (optional, safe)
+      - name: Check secrets
         run: |
-          export RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }}
-          export RAILWAY_PROJECT_ID=${{ secrets.RAILWAY_PROJECT_ID }}
+          if [ -z "${{ secrets.RAILWAY_TOKEN }}" ]; then
+            echo "RAILWAY_TOKEN is missing!"
+            exit 1
+          fi
+          if [ -z "${{ secrets.RAILWAY_PROJECT_ID }}" ]; then
+            echo "RAILWAY_PROJECT_ID is missing!"
+            exit 1
+          fi
+          echo "✅ Secrets are set"
+
+      # 5️⃣ Deploy to Railway
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+        run: |
           railway up --detach
