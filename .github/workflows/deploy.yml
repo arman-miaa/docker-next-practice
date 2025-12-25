@@ -20,28 +20,13 @@ jobs:
         with:
           node-version: 20
 
-      # 3️⃣ Install Railway CLI (manual stable version)
+      # 3️⃣ Install Railway CLI
       - name: Install Railway CLI
-        run: |
-          curl -L https://github.com/railwayapp/cli/releases/download/v2.2.4/railway-linux-amd64.tar.gz -o railway.tar.gz
-          tar -xzf railway.tar.gz
-          sudo mv railway /usr/local/bin/
+        run: curl -sSL https://railway.app/install.sh | sh
 
-      # 4️⃣ Check secrets (optional debug)
-      - name: Check secrets
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-        run: |
-          echo "RAILWAY_TOKEN is set: ${RAILWAY_TOKEN:+yes}"
-          echo "RAILWAY_PROJECT_ID is set: ${RAILWAY_PROJECT_ID:+yes}"
-
-      # 5️⃣ Deploy to Railway
+      # 4️⃣ Deploy to Railway (explicit export of secrets)
       - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
         run: |
-          railway login --apiKey $RAILWAY_TOKEN
-          railway link $RAILWAY_PROJECT_ID
+          export RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }}
+          export RAILWAY_PROJECT_ID=${{ secrets.RAILWAY_PROJECT_ID }}
           railway up --detach
