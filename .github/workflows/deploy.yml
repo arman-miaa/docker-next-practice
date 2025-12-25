@@ -17,9 +17,9 @@ jobs:
         uses: actions/checkout@v4
 
       # 2️⃣ Deploy to Railway
-      # We use the --project flag instead of 'railway link' to avoid the "unexpected argument" error.
+      # Note: We do NOT use 'railway link' or '--project' because 
+      # the RAILWAY_TOKEN already contains the project context.
       - name: Deploy to Railway
-        run: railway up --detach --service web --project $RAILWAY_PROJECT_ID
+        run: railway up --detach
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
