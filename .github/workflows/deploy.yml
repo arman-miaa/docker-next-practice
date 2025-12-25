@@ -32,4 +32,4 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           export PATH="$HOME/.railway/bin:$PATH"
-          railway up --service ${{ secrets.RAILWAY_SERVICE_NAME }} --detach
+          railway up --detach
