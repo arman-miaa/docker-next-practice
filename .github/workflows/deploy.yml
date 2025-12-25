@@ -28,6 +28,5 @@ jobs:
       # 3️⃣ Deploy to Railway
       - name: Deploy to Railway
         run: |
-          railway login --apiKey $RAILWAY_TOKEN
           railway link $RAILWAY_PROJECT_ID
           railway up --detach --service web
